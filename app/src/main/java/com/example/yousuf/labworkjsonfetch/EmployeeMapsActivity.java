@@ -65,7 +65,7 @@ public class EmployeeMapsActivity extends FragmentActivity implements OnMapReady
             String latitude = contact.get("latitude");
             String longitude=contact.get("longitude");
 
-            if(latitude ==null&&longitude==null){
+            if(latitude.equals("null")&&longitude.equals("null")){
                 LayoutInflater li = LayoutInflater.from(EmployeeMapsActivity.this);
                 View promptsView = li.inflate(R.layout.input_dialog, null);
 

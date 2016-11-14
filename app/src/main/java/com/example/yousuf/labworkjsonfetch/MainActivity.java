@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     static ArrayList<HashMap<String, String>> contactList;
 
-    SQLiteDatabase database;
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +48,11 @@ public class MainActivity extends AppCompatActivity {
             Log.e("db","db: "+database);
             database = openOrCreateDatabase("lushandb", Context.MODE_PRIVATE, null);
             Log.e("db","db: "+database);
-            database.execSQL("CREATE TABLE IF NOT EXISTS Employee(Name VARCHAR,latitude VARCHAR,longitude VARCHAR);");
+            database.execSQL("CREATE TABLE IF NOT EXISTS Employee(Name VARCHAR,latitude VARCHAR," +
+                    "longitude VARCHAR);");
             new GetContacts().execute();
-        }else {
-            Cursor c = database.rawQuery("select * from Employee", null);
+        }//else {
+            Cursor c = database.rawQuery("select DISTINCT * from Employee", null);
             int current_offline_post = c.getCount();
             Log.e("db",current_offline_post+" count");
             if(current_offline_post>0){
@@ -59,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
 //                Cursor cursor = database.rawQuery("Select * from Employee", null);
                 String name = null, latitude = null, logitude = null;
                 c.moveToFirst();
-                HashMap<String, String> contact = new HashMap<>();
+
+                contactList.clear();
                 while (c.moveToNext()) {
+                    HashMap<String, String> contact = new HashMap<>();
                     name = c.getString(0);
                     latitude = c.getString(1);
                     logitude = c.getString(2);
@@ -68,10 +71,16 @@ public class MainActivity extends AppCompatActivity {
                     contact.put("name", name);
                     contact.put("latitude", latitude);
                     contact.put("longitude", logitude);
+                    Log.d("buggy",name+latitude+logitude);
                     // adding contact to contact list
                     contactList.add(contact);
                 }
                 c.close();
+                for (int i=0;i<contactList.size();i++){
+                    Log.e("problem",contactList.get(i).get("name"));
+                    Log.e("problem",contactList.get(i).get("latitude"));
+                    Log.e("problem",contactList.get(i).get("longitude"));
+                }
                 ListAdapter adapter = new SimpleAdapter(
                         MainActivity.this, contactList,
                         R.layout.list_item, new String[]{"name", "longitude",
@@ -81,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
 //                Check Silently If There Is New Post Online
             }
-        }
+//        }
 
 
     }
@@ -146,15 +155,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                         database.execSQL("INSERT INTO Employee (Name, latitude, longitude) VALUES ('" + name + "', '" + latitude + "', '" + longitude + "');");
                         // tmp hash map for single contact
-                        HashMap<String, String> contact = new HashMap<>();
+//                        HashMap<String, String> contact = new HashMap<>();
                         // adding each child node to HashMap key => value
                         // contact.put("id", id);
-                        contact.put("name", name);
-                        contact.put("latitude", latitude);
-                        contact.put("longitude", longitude);
+//                        contact.put("name", name);
+//                        contact.put("latitude", latitude);
+//                        contact.put("longitude", longitude);
 
                         // adding contact to contact list
-                        contactList.add(contact);
+//                        contactList.add(contact);
                     }
 
                 } catch (final JSONException e) {
@@ -196,13 +205,13 @@ public class MainActivity extends AppCompatActivity {
             /**
              * Updating parsed JSON data into ListView
              * */
-            ListAdapter adapter = new SimpleAdapter(
-                    MainActivity.this, contactList,
-                    R.layout.list_item, new String[]{"name", "longitude",
-                    "latitude"}, new int[]{R.id.name,
-                    R.id.longitude, R.id.latitude});
-
-            lv.setAdapter(adapter);
+//            ListAdapter adapter = new SimpleAdapter(
+//                    MainActivity.this, contactList,
+//                    R.layout.list_item, new String[]{"name", "longitude",
+//                    "latitude"}, new int[]{R.id.name,
+//                    R.id.longitude, R.id.latitude});
+//
+//            lv.setAdapter(adapter);
 
         }
 
